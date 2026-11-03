@@ -1,0 +1,32 @@
+name: H-1B slot check
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"   # every 10 minutes (GitHub may delay a few minutes)
+  workflow_dispatch:          # lets you run it manually from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: slot-check
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python check_slots.py
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          LOCATIONS: ${{ vars.LOCATIONS }}
+      - name: Save state
+        run: |
+          git config user.name "slot-bot"
+          git config user.email "slot-bot@users.noreply.github.com"
+          git add state.json
+          git diff --cached --quiet || (git commit -m "update slot state" && git push)
