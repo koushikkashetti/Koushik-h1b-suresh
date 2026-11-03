@@ -24,8 +24,11 @@ URL = os.getenv("SLOTS_URL", "https://checkvisaslots.com/latest-us-visa-availabi
 NTFY_TOPIC = os.getenv("NTFY_TOPIC", "").strip()
 LOCATIONS = [s.strip().upper() for s in os.getenv("LOCATIONS", "").split(",") if s.strip()]
 STATE_FILE = Path(os.getenv("STATE_FILE", Path(__file__).with_name("state.json")))
-HEADERS = {"User-Agent": "Mozilla/5.0 (personal H-1B slot monitor)"}
-
+HEADERS = {
+       "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36",
+       "Accept": "text/html,application/xhtml+xml",
+       "Accept-Language": "en-US,en;q=0.9",
+}
 
 def fetch_rows():
     resp = requests.get(URL, headers=HEADERS, timeout=30)
